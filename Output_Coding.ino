@@ -8,11 +8,11 @@
 #define relay1 5 
 
 //제조사에서 적용한 와이파이이기에, 사용자의 환경에서 사용 가능한 와이파이와 비밀번호로 설정해야합니다.
-const char *ssid     = "raspberry_net5";
-const char *password = "elezzang75969116";
+const char *ssid     = "Elecrow803";
+const char *password = "elecrow2014";
 
 //입력부 코딩 동작에서 출력된 IP address를 사용합니다
-const char *host = "192.168.51.129";
+const char *host = "192.168.1.184";
 WiFiClient client;
 //Amended as you build the Server Server port number
 const int tcpPort = 8266;
