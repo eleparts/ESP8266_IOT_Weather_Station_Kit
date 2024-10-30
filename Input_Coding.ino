@@ -2,8 +2,8 @@
 #define MAX_SRV_CLIENTS 3   //Maximum number of connection at the same time, the number of devices you want to access, 8266 tcpserver access only five
 
 //제조사에서 적용한 와이파이이기에, 사용자의 환경에서 사용 가능한 와이파이와 비밀번호로 설정해야합니다.
-const char *ssid = "Elecrow803"; 
-const char *password = "elecrow2014";
+const char *ssid = "raspberry_net5"; 
+const char *password = "elezzang75969116";
  
 WiFiServer server(8266);//Your port, modify, the range of 0-65535
 WiFiClient serverClients[MAX_SRV_CLIENTS];
@@ -20,29 +20,28 @@ int temp_print,temp_print_1,temp_print_10;
 int humi_print,humi_print_1,humi_print_10;
 
 void setup(){
-    Serial.begin(115200);
-    delay(10);
-    pinMode(board_LED, OUTPUT);
-    digitalWrite(board_LED, 0);
-    //wifi 연결 및 연결 확인과 IP 주소 출력
-    WiFi.begin(ssid, password);
- 
-    while (WiFi.status() != WL_CONNECTED){
-      delay(500);
-    }
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());//WiFi. LocalIP () return 8266 IP addresses
+  Serial.begin(115200);
+  delay(10);
+  pinMode(board_LED, OUTPUT);
+  digitalWrite(board_LED, 0);
+  //wifi 연결 및 연결 확인과 IP 주소 출력
+  WiFi.begin(ssid, password);
 
-    server.begin();
-    server.setNoDelay(true);  //Combined with normal only after some
+  while (WiFi.status() != WL_CONNECTED){
+    delay(500);
+  }
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());//WiFi. LocalIP () return 8266 IP addresses
 
-    pinMode(water_PIN, INPUT);
-    pinMode(uv_PIN, INPUT);
+  server.begin();
+  server.setNoDelay(true);  //Combined with normal only after some
+
+  pinMode(water_PIN, INPUT);
+  pinMode(uv_PIN, INPUT);
 }
  
 void loop(){
-
   int temp;
   int humi;
   unsigned int loopCnt;
@@ -90,7 +89,7 @@ void loop(){
     }
     //낮을 때는 방금 저장한 시간을 뺀 시간을 기록합니다.
     //50초 이상의 값이 나온다면, '1' 이나 '0'으로 결론을 내리며, 배열에 저장합니다.
-    if (micros() - time1  >50){
+    if(micros() - time1 > 50){
       chr[i]=1;
     }else{
       chr[i]=0;
@@ -113,15 +112,15 @@ void loop(){
   static long previousMillis = 0;
   static int currstate = 0;
   
-    //200ms
+  //200ms
   if (millis() - previousMillis > 200){
-      previousMillis = millis();
-      currstate = 1 - currstate;
-      digitalWrite(board_LED, currstate);
+    previousMillis = millis();
+    currstate = 1 - currstate;
+    digitalWrite(board_LED, currstate);
 
-      //아날로그 A0핀에서 광센서 값 받아오기
-      light_sensor=analogRead(A0);
-      Serial.println(light_sensor);
+    //아날로그 A0핀에서 광센서 값 받아오기
+    light_sensor=analogRead(A0);
+    Serial.println(light_sensor);
   }
    
   uint8_t i;
@@ -129,21 +128,21 @@ void loop(){
     for (i = 0; i < MAX_SRV_CLIENTS; i++){
       Serial.println(MAX_SRV_CLIENTS);
       if (!serverClients[i] || !serverClients[i].connected()){
-          if (serverClients[i]) serverClients[i].stop();
-          serverClients[i] = server.available();
-          continue;
+        if (serverClients[i]) serverClients[i].stop();
+        serverClients[i] = server.available();
+        continue;
       }
     }
     WiFiClient serverClient = server.available();
     serverClient.stop();
   }
   for (i = 0; i < MAX_SRV_CLIENTS; i++){
-      if (serverClients[i] && serverClients[i].connected()){
-          digitalWrite(board_LED, 0);
-          if (serverClients[i].available()){
-              while (serverClients[i].available()) Serial.write(serverClients[i].read());
-          }
+    if (serverClients[i] && serverClients[i].connected()){
+      digitalWrite(board_LED, 0);
+      if (serverClients[i].available()){
+        while (serverClients[i].available()) Serial.write(serverClients[i].read());
       }
+    }
   }
 
   //통신하여 출력부 코드로 넘길 buff[] 배열
@@ -152,7 +151,7 @@ void loop(){
   
   //워터 센서가 감지될 때, '1' 값 입력
   if(digitalRead(water_PIN)==HIGH){
-  buff[1]='1';
+    buff[1]='1';
   }else{
     buff[1]='0';
   }
@@ -230,15 +229,14 @@ void loop(){
       }
   }
   
-    void uv();
-  }
+  void uv();
+}
   
-  void uv()
-  {
-    int uvLevel = analogRead(uv_PIN);
-    int refLevel=1023;
-    //센서에서 매우 정확한 출력값을 얻기 위해 3.3V 전원 핀을 레퍼런스로 사용합니다.
-    int outputVoltage = 3.3 / refLevel * uvLevel;
-    int v;
-    v=outputVoltage;
-  }
+void uv(){
+  int uvLevel = analogRead(uv_PIN);
+  int refLevel=1023;
+  //센서에서 매우 정확한 출력값을 얻기 위해 3.3V 전원 핀을 레퍼런스로 사용합니다.
+  int outputVoltage = 3.3 / refLevel * uvLevel;
+  int v;
+  v=outputVoltage;
+}
