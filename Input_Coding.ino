@@ -2,8 +2,8 @@
 #define MAX_SRV_CLIENTS 3   //Maximum number of connection at the same time, the number of devices you want to access, 8266 tcpserver access only five
 
 //제조사에서 적용한 와이파이이기에, 사용자의 환경에서 사용 가능한 와이파이와 비밀번호로 설정해야합니다.
-const char *ssid = "raspberry_net5"; 
-const char *password = "elezzang75969116";
+const char *ssid = "Elecrow803"; 
+const char *password = "elecrow2014";
  
 WiFiServer server(8266);//Your port, modify, the range of 0-65535
 WiFiClient serverClients[MAX_SRV_CLIENTS];
